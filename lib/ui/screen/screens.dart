@@ -1,0 +1,20 @@
+import 'dart:io';
+import 'package:flutter/material.dart';
+import 'package:flutter_pdfview/flutter_pdfview.dart';
+import 'package:get/get.dart';
+import 'package:modul_app/constant/constant.dart';
+import 'package:modul_app/controller/controllers.dart';
+import 'package:modul_app/model/models.dart';
+import 'package:modul_app/ui/widget/widgets.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
+import '../../style/style.dart';
+
+part 'home_screen.dart';
+part 'pdf_screen.dart';
+part 'job_details_screen.dart';
+part 'modul_list.dart';
+part 'quiz_screen.dart';
+part 'quiz_result.dart';
