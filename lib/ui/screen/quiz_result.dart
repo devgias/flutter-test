@@ -1,8 +1,10 @@
 part of 'screens.dart';
 
 class QuizResult extends StatelessWidget {
-  final List<QuizModel> quiz;
-  const QuizResult({Key? key, required this.quiz}) : super(key: key);
+  final QuizResultModel result;
+  QuizResult({Key? key, required this.result}) : super(key: key);
+
+  final List<int> point = [0, 20, 40, 80, 90];
 
   @override
   Widget build(BuildContext context) => Scaffold(
@@ -19,7 +21,7 @@ class QuizResult extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.only(right: 10),
               child: TextButton(
-                onPressed: () => Get.to(() => const HomeScreen()),
+                onPressed: () => Get.offAll(() => const HomeScreen()),
                 child: Text(
                   'Keluar',
                   style: subtTitle.copyWith(color: Colors.white),
@@ -45,26 +47,16 @@ class QuizResult extends StatelessWidget {
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        SizedBox(
-                          height: 60,
-                          width: 60,
-                          child: Image.asset(
-                              'assets/star${(quiz.where((element) => element.answered!).toList().length / quiz.length) * 100 > 0 ? 'fill' : 'blank'}.png'),
-                        ),
-                        SizedBox(
-                          height: 60,
-                          width: 60,
-                          child: Image.asset(
-                              'assets/star${(quiz.where((element) => element.answered!).toList().length / quiz.length) * 100 >= 80 ? 'fill' : 'blank'}.png'),
-                        ),
-                        SizedBox(
-                          height: 60,
-                          width: 60,
-                          child: Image.asset(
-                              'assets/star${(quiz.where((element) => element.answered!).toList().length / quiz.length) * 100 >= 90 ? 'fill' : 'blank'}.png'),
-                        ),
-                      ],
+                      children: point
+                          .map(
+                            (e) => SizedBox(
+                              height: 60,
+                              width: 60,
+                              child: Image.asset(
+                                  'assets/star${(result.value ?? 0) >= e ? 'fill' : 'blank'}.png'),
+                            ),
+                          )
+                          .toList(),
                     ),
                   ],
                 ),
@@ -85,14 +77,7 @@ class QuizResult extends StatelessWidget {
                       textAlign: TextAlign.center,
                     ),
                     Text(
-                      ((quiz
-                                      .where((element) => element.answered!)
-                                      .toList()
-                                      .length /
-                                  quiz.length) *
-                              100)
-                          .toInt()
-                          .toString(),
+                      '${result.value}',
                       style: title.copyWith(color: Colors.white, fontSize: 50),
                       textAlign: TextAlign.center,
                     ),

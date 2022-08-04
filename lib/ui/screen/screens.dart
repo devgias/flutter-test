@@ -11,6 +11,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../style/style.dart';
+import 'dart:async';
 
 part 'home_screen.dart';
 part 'pdf_screen.dart';
@@ -18,3 +19,6 @@ part 'job_details_screen.dart';
 part 'modul_list.dart';
 part 'quiz_screen.dart';
 part 'quiz_result.dart';
+part 'job_desc_screen.dart';
+part 'splash_screen.dart';
+part 'quiz_history.dart';

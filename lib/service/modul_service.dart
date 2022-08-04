@@ -1,29 +1,30 @@
 part of 'services.dart';
 
 class ModulService {
-  static Future<ApiReturnValue<ModulModel>> getSingleModuls(
+  static Future<ApiReturnValue<ModulModel>> getSingleModul(
       {required String? type, String? search}) async {
     try {
       final response = await http.get(
-        Uri.parse('$baseUrl/api/doc?search=$search&type=$type'),
+        Uri.parse(baseApi + 'doc?search=$search&type=$type'),
         headers: {
-          'Authorization': 'Bearer 1|MC6m9BI3VLRnw1WkjacbAfp20QzrNAvdopM5umrY',
+          'Authorization': token,
           'Content-Type': 'application/json',
           'Accept': 'application/json',
         },
       );
 
+      final json = jsonDecode(response.body);
+
       if (response.statusCode != 200) {
+        String message = json['meta']['message'] ?? 'Gagal mendapatkan modul';
         return ApiReturnValue(
           value: null,
-          message: 'Failed to get moduls',
+          message: message,
         );
       }
 
-      final json = jsonDecode(response.body);
       final modul = ModulModel.fromJson(json['data']);
-
-      return ApiReturnValue(value: modul, message: null);
+      return ApiReturnValue(value: modul, message: 'berhasil');
     } catch (e) {
       return ApiReturnValue(value: null, message: e.toString());
     }
@@ -33,26 +34,28 @@ class ModulService {
       {required String? type, String? search}) async {
     try {
       final response = await http.get(
-        Uri.parse('$baseUrl/api/doc?search=$search&type=$type'),
+        Uri.parse(baseApi + 'doc?search=$search&type=$type'),
         headers: {
-          'Authorization': 'Bearer 1|MC6m9BI3VLRnw1WkjacbAfp20QzrNAvdopM5umrY',
+          'Authorization': token,
           'Content-Type': 'application/json',
           'Accept': 'application/json',
         },
       );
 
+      final json = jsonDecode(response.body);
+
       if (response.statusCode != 200) {
+        String message = json['meta']['message'] ?? 'Gagal mendapatkan modul';
         return ApiReturnValue(
           value: null,
-          message: 'Failed to get moduls',
+          message: message,
         );
       }
 
-      final json = jsonDecode(response.body);
       final moduls = (json['data'] as Iterable)
           .map((e) => ModulModel.fromJson(e))
           .toList();
-      return ApiReturnValue(value: moduls, message: null);
+      return ApiReturnValue(value: moduls, message: 'berhasil');
     } catch (e) {
       return ApiReturnValue(value: null, message: e.toString());
     }

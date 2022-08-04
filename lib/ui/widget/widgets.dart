@@ -1,6 +1,13 @@
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:modul_app/controller/controllers.dart';
+import 'package:modul_app/model/models.dart';
 import 'package:modul_app/style/style.dart';
+import 'package:modul_app/ui/screen/screens.dart';
+import 'package:supercharged/supercharged.dart';
 
 part 'home_menu.dart';
 part 'list_tile.dart';
@@ -8,3 +15,7 @@ part 'quiz_opsi.dart';
 part 'drawer.dart';
 part 'drawer_tile.dart';
 part 'my_snackbar.dart';
+part 'modul_list.dart';
+part 'quiz_list_tile_history.dart';
+part 'circle_chart.dart';
+part 'card_detail_result.dart';

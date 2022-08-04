@@ -35,14 +35,13 @@ class HomeScreen extends GetView<HomeController> {
                         type: 'general',
                         search: 'complete selular')
                     .then(
-                      (value) => value.value!
+                      (value) => value.value ?? false
                           ? Get.to(
                               () => PdfScreen(
-                                  title: 'Budaya Perusahaan',
-                                  link: baseUrlDocs + controller.modul!.path!,
-                                  isQuizable: controller.modul!.isQuizable!),
+                                  modul:
+                                      controller.modul ?? const ModulModel()),
                             )
-                          : snackbar(context, false, value.message!,
+                          : snackbar(context, false, value.message ?? 'Error',
                               duration: 1000),
                     ),
               ),
@@ -54,14 +53,10 @@ class HomeScreen extends GetView<HomeController> {
                         isSingle: true,
                         type: 'general',
                         search: 'budaya perusahaan')
-                    .then((value) => value.value!
-                        ? Get.to(
-                            () => PdfScreen(
-                                title: 'Budaya Perusahaan',
-                                link: baseUrlDocs + controller.modul!.path!,
-                                isQuizable: controller.modul!.isQuizable!),
-                          )
-                        : snackbar(context, false, value.message!,
+                    .then((value) => value.value ?? false
+                        ? Get.to(() => PdfScreen(
+                            modul: controller.modul ?? const ModulModel()))
+                        : snackbar(context, false, value.message ?? 'Error',
                             duration: 1000)),
               ),
               HomeMenu(
@@ -73,33 +68,32 @@ class HomeScreen extends GetView<HomeController> {
                         type: 'general',
                         search: 'pengenalan program')
                     .then(
-                      (value) => value.value!
+                      (value) => value.value ?? false
                           ? Get.to(
                               () => PdfScreen(
-                                  title: 'Budaya Perusahaan',
-                                  link: baseUrlDocs + controller.modul!.path!,
-                                  isQuizable: controller.modul!.isQuizable!),
+                                  modul:
+                                      controller.modul ?? const ModulModel()),
                             )
-                          : snackbar(context, false, value.message!,
+                          : snackbar(context, false, value.message ?? 'Error',
                               duration: 1000),
                     ),
               ),
               HomeMenu(
-                urlAsset: 'assets/job_desc.jpg',
-                title: 'Job Description',
-                onTap: () async => await controller
-                    .getDocument(isSingle: false, type: 'job-desc')
-                    .then(
-                      (value) => value.value!
-                          ? Get.to(
-                              () => const ModulListScreen(
-                                title: 'Job Description',
-                              ),
-                            )
-                          : snackbar(context, false, value.message!,
-                              duration: 1000),
-                    ),
-              ),
+                  urlAsset: 'assets/job_desc.jpg',
+                  title: 'Job Description',
+                  onTap: () async {
+                    final result1 = await controller.getDocument(
+                        isSingle: true, type: 'general', search: 'job desc');
+                    final result2 = await controller.getDocument(
+                        isSingle: false, type: 'job-desc');
+
+                    if ((result1.value ?? false) && (result2.value ?? false)) {
+                      Get.to(() => const JobDescScreen());
+                    } else {
+                      snackbar(context, false, result1.message ?? 'Error',
+                          duration: 1000);
+                    }
+                  }),
               HomeMenu(
                 urlAsset: 'assets/explain_job.jpg',
                 title: 'Penjelasan Pekerjaan',
@@ -109,13 +103,10 @@ class HomeScreen extends GetView<HomeController> {
                 ),
               ),
               HomeMenu(
-                  urlAsset: 'assets/katalog.jpg', title: 'Katalog', onTap: () {}
-                  //  () => Get.to(
-                  //   () => const PdfScreen(
-                  //       title: 'Katalog',
-                  //       link: baseUrlDocs + 'katalog_retail.pdf'),
-                  // ),
-                  ),
+                urlAsset: 'assets/katalog.jpg',
+                title: 'Katalog',
+                onTap: () {},
+              ),
             ],
           ),
         ),

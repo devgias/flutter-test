@@ -1,6 +1,6 @@
 part of 'widgets.dart';
 
-class MyDrawer extends StatelessWidget {
+class MyDrawer extends GetView<HomeController> {
   const MyDrawer({Key? key}) : super(key: key);
 
   @override
@@ -38,7 +38,16 @@ class MyDrawer extends StatelessWidget {
                 color: Colors.grey,
               ),
               DrawerListTile(
-                ontap: () {},
+                ontap: () => Get.offAll(() => const HomeScreen()),
+                title: 'Home',
+                icon: MdiIcons.home,
+              ),
+              DrawerListTile(
+                ontap: () async => await controller.getresults().then((value) =>
+                    (value.value ?? false)
+                        ? Get.to(() => const QuizHistoryScreen())
+                        : snackbar(context, value.value ?? false,
+                            value.message ?? 'error')),
                 title: 'History Quiz',
                 icon: MdiIcons.history,
               ),

@@ -27,13 +27,14 @@ class JobDetailsScreen extends GetView<HomeController> {
                 onTap: () async => await controller
                     .getDocument(isSingle: false, type: 'operational')
                     .then(
-                      (value) => value.value!
+                      (value) => value.value ?? false
                           ? Get.to(
                               () => const ModulListScreen(
                                 title: 'Operasional',
                               ),
+                              transition: Transition.cupertino,
                             )
-                          : snackbar(context, false, value.message!,
+                          : snackbar(context, false, value.message ?? 'Error',
                               duration: 1000),
                     ),
               ),
@@ -43,13 +44,14 @@ class JobDetailsScreen extends GetView<HomeController> {
                 onTap: () async => await controller
                     .getDocument(isSingle: false, type: 'sales')
                     .then(
-                      (value) => value.value!
+                      (value) => value.value ?? false
                           ? Get.to(
                               () => const ModulListScreen(
                                 title: 'Penjualan',
                               ),
+                              transition: Transition.cupertino,
                             )
-                          : snackbar(context, false, value.message!,
+                          : snackbar(context, false, value.message ?? 'Error',
                               duration: 1000),
                     ),
               ),
@@ -59,13 +61,14 @@ class JobDetailsScreen extends GetView<HomeController> {
                 onTap: () async => await controller
                     .getDocument(isSingle: false, type: 'service')
                     .then(
-                      (value) => value.value!
+                      (value) => value.value ?? false
                           ? Get.to(
                               () => const ModulListScreen(
                                 title: 'Pelayanan',
                               ),
+                              transition: Transition.cupertino,
                             )
-                          : snackbar(context, false, value.message!,
+                          : snackbar(context, false, value.message ?? 'Error',
                               duration: 1000),
                     ),
               ),

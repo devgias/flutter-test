@@ -1,101 +1,177 @@
 part of 'screens.dart';
 
 class QuizScreen extends StatelessWidget {
-  final controller = Get.put(QuizController());
-  List<QuizModel> quiz;
-  final int index;
-  QuizScreen({Key? key, required this.index, required this.quiz})
-      : super(key: key);
+  final controller = Get.put(QuizController(quizId: Get.arguments as int));
+  QuizScreen({
+    Key? key,
+  }) : super(key: key);
 
   @override
-  Widget build(BuildContext context) => Scaffold(
-        backgroundColor: secondaryOneColor,
-        appBar: AppBar(
-          elevation: 0,
-          backgroundColor: secondaryOneColor,
-          iconTheme: const IconThemeData(color: Colors.white),
-          title: Text(
-            'Quiz',
-            style: appTitle.copyWith(color: Colors.white),
-          ),
-          actions: [
-            Container(
-              alignment: Alignment.center,
-              margin: const EdgeInsets.only(right: 10),
-              child: Obx(() => Text(
-                    controller.time.value.toString(),
-                    style: subtTitle.copyWith(color: Colors.white),
-                  )),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(right: 10),
-              child: TextButton(
-                onPressed: () => showDialog<String>(
-                    context: context,
-                    builder: (context) => _confirmDialog(context)),
-                child: Text(
-                  'Keluar',
-                  style: subtTitle.copyWith(color: Colors.white),
-                ),
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: primaryColor,
+      appBar: AppBar(
+        elevation: 0,
+        backgroundColor: primaryColor,
+        iconTheme: const IconThemeData(color: Colors.white),
+        title: Text(
+          'Quiz',
+          style: appTitle.copyWith(color: Colors.white),
+        ),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 10),
+            child: TextButton(
+              onPressed: () => showDialog<String>(
+                  context: context,
+                  builder: (context) => _confirmDialog(context)),
+              child: Text(
+                'Keluar',
+                style: subtTitle.copyWith(color: Colors.white),
               ),
             ),
-          ],
-        ),
-        body: SingleChildScrollView(
-          child: Container(
-            padding: const EdgeInsets.all(10),
-            child: Column(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(20),
-                  decoration: const BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.all(Radius.circular(10))),
-                  child: Text(
-                    quiz[index].question!,
-                    style: subtTitle.copyWith(fontSize: 20),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-                Container(
-                  margin: const EdgeInsets.symmetric(vertical: 20),
-                  child: Column(
-                    children: quiz[index]
-                        .options!
-                        .map((e) => QuizOpsi(
-                            opsi: e,
-                            ontap: () {
-                              quiz[index] = QuizModel(
-                                  id: quiz[index].id,
-                                  options: quiz[index].options,
-                                  question: quiz[index].question,
-                                  trueAnswer: quiz[index].trueAnswer,
-                                  selectedAnswer: e,
-                                  answered: quiz[index].options!.indexOf(e) ==
-                                      quiz[index].trueAnswer);
-                              controller.timer?.cancel();
-                              showDialog<String>(
-                                  barrierDismissible: false,
-                                  context: context,
-                                  builder: (context) => WillPopScope(
-                                        child: resultDialog(
-                                            context,
-                                            quiz[index].options!.indexOf(e) ==
-                                                quiz[index].trueAnswer,
-                                            e,
-                                            correctAnswer: quiz[index].options![
-                                                quiz[index].trueAnswer!]),
-                                        onWillPop: () => Future.value(false),
-                                      ));
-                            }))
-                        .toList(),
+          ),
+        ],
+      ),
+      body: SingleChildScrollView(
+        child: GetBuilder<QuizController>(
+          id: 'quiz',
+          builder: (_) => controller.quizes == null
+              ? const Padding(
+                  padding: EdgeInsets.only(top: 100),
+                  child: Center(
+                    child: CircularProgressIndicator(),
                   ),
                 )
-              ],
-            ),
-          ),
+              : Container(
+                  padding: const EdgeInsets.all(10),
+                  child: Column(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(20),
+                        decoration: const BoxDecoration(
+                            color: Color.fromARGB(255, 42, 58, 97),
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(10))),
+                        child: Text(
+                          controller.quizes![controller.index].question!,
+                          style: subtTitle.copyWith(
+                              fontSize: 24, color: Colors.white),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                      Container(
+                        margin: const EdgeInsets.symmetric(vertical: 20),
+                        child: Column(
+                          children: controller
+                              .quizes![controller.index].options!
+                              .map((e) => QuizOpsi(
+                                  opsi: e.content!,
+                                  ontap: () async {
+                                    controller.timer?.cancel();
+                                    SharedPreferences pref =
+                                        await SharedPreferences.getInstance();
+                                    pref.setInt('index', controller.index + 1);
+                                    await controller
+                                        .answer(
+                                          questionId: controller
+                                              .quizes![controller.index].id!,
+                                          quizId: controller
+                                              .quizes![controller.index]
+                                              .quizId!,
+                                          quizOptionId: controller
+                                              .quizes![controller.index]
+                                              .options!
+                                              .firstWhere((element) =>
+                                                  element.content == e.content)
+                                              .id!,
+                                          value: e.content! ==
+                                              controller
+                                                  .quizes![controller.index]
+                                                  .options!
+                                                  .firstWhere((element) =>
+                                                      element.isTrue!)
+                                                  .content,
+                                        )
+                                        .then(
+                                          (value) => value.value!
+                                              ? showDialog<String>(
+                                                  barrierDismissible: false,
+                                                  context: context,
+                                                  builder: (context) =>
+                                                      WillPopScope(
+                                                        child: resultDialog(
+                                                          context,
+                                                          e.content! ==
+                                                              controller
+                                                                  .quizes![
+                                                                      controller
+                                                                          .index]
+                                                                  .options!
+                                                                  .firstWhere(
+                                                                      (element) =>
+                                                                          element
+                                                                              .isTrue!)
+                                                                  .content,
+                                                          e.content!,
+                                                          correctAnswer: controller
+                                                              .quizes![
+                                                                  controller
+                                                                      .index]
+                                                              .options!
+                                                              .firstWhere(
+                                                                  (element) =>
+                                                                      element
+                                                                          .isTrue!)
+                                                              .content,
+                                                        ),
+                                                        onWillPop: () =>
+                                                            Future.value(false),
+                                                      ))
+                                              : snackbar(context, value.value!,
+                                                  value.message!),
+                                        );
+                                  }))
+                              .toList(),
+                        ),
+                      ),
+                      Obx(
+                        () => Container(
+                            height: 70,
+                            width: 70,
+                            margin: const EdgeInsets.only(top: 30),
+                            padding: const EdgeInsets.all(10),
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(50)),
+                              border: Border.all(
+                                  color: controller.time.value < 10
+                                      ? Colors.red
+                                      : controller.time.value < 20
+                                          ? Colors.yellow
+                                          : Colors.green,
+                                  width: 4),
+                            ),
+                            child: Text(
+                              controller.time.value.toString(),
+                              textAlign: TextAlign.center,
+                              style: subtTitle.copyWith(
+                                  fontSize: 30,
+                                  color: controller.time.value < 10
+                                      ? Colors.red[400]
+                                      : controller.time.value < 20
+                                          ? Colors.yellow[400]
+                                          : Colors.green[400]),
+                            )),
+                      ),
+                    ],
+                  ),
+                ),
         ),
-      );
+      ),
+    );
+  }
 
   _confirmDialog(BuildContext context) {
     return AlertDialog(
@@ -109,12 +185,17 @@ class QuizScreen extends StatelessWidget {
       ),
       actions: [
         TextButton(
-            onPressed: () async {
-              final pref = await SharedPreferences.getInstance();
-              pref.setBool('modequiz', false);
-              Get.delete<QuizController>();
-              Get.offAll(() => const HomeScreen());
-            },
+            onPressed: () async =>
+                await controller.calculate(quizId: controller.quizId!).then(
+                      (value) => value != null
+                          ? Get.offAll(
+                              () => QuizResult(
+                                result: value.value!,
+                              ),
+                              transition: Transition.cupertino,
+                            )
+                          : snackbar(context, false, value.message!),
+                    ),
             child: Text(
               "YES",
               style: subtTitle.copyWith(color: Colors.green[400]),
@@ -132,6 +213,9 @@ class QuizScreen extends StatelessWidget {
   resultDialog(BuildContext context, bool isTrue, String answer,
       {String? correctAnswer}) {
     return AlertDialog(
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(Radius.circular(20)),
+      ),
       title: Text(
         isTrue ? "Benar" : "Salah",
         textAlign: TextAlign.center,
@@ -140,32 +224,36 @@ class QuizScreen extends StatelessWidget {
       scrollable: false,
       content: Container(
         padding: const EdgeInsets.all(10),
-        height: 200,
+        height: isTrue ? 200 : 400,
         width: 400,
         child: Column(
-          mainAxisAlignment: isTrue
-              ? MainAxisAlignment.spaceEvenly
-              : MainAxisAlignment.spaceBetween,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            Text(
-              "Jawaban anda :",
-              textAlign: TextAlign.center,
-              style: subtTitle,
-            ),
-            Card(
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10)),
-              child: Container(
-                decoration: BoxDecoration(
-                    borderRadius: const BorderRadius.all(Radius.circular(10)),
-                    color: isTrue ? Colors.green[800] : Colors.red[600]),
-                padding:
-                    const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                child: Text(
-                  answer,
-                  style: subtTitle.copyWith(color: Colors.white),
+            Column(
+              children: [
+                Text(
+                  "Jawaban anda :",
+                  textAlign: TextAlign.center,
+                  style: subtTitle,
                 ),
-              ),
+                Card(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10)),
+                  child: Container(
+                    decoration: BoxDecoration(
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(10)),
+                        color: isTrue ? Colors.green[800] : Colors.red[600]),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 10, horizontal: 20),
+                    child: Text(
+                      answer,
+                      textAlign: TextAlign.center,
+                      style: subtTitle.copyWith(color: Colors.white),
+                    ),
+                  ),
+                ),
+              ],
             ),
             isTrue
                 ? const SizedBox()
@@ -188,6 +276,7 @@ class QuizScreen extends StatelessWidget {
                               vertical: 10, horizontal: 20),
                           child: Text(
                             correctAnswer!,
+                            textAlign: TextAlign.center,
                             style: subtTitle.copyWith(color: Colors.white),
                           ),
                         ),
@@ -210,16 +299,18 @@ class QuizScreen extends StatelessWidget {
             "Lanjut",
             style: generalText.copyWith(color: Colors.white),
           ),
-          onPressed: () {
-            index + 1 < quiz.length
-                ? Get.offAll(() => QuizScreen(
-                      quiz: quiz,
-                      index: index + 1,
-                    ))
-                : Get.offAll(() => QuizResult(
-                      quiz: quiz,
-                    ));
-            controller.startTimer();
+          onPressed: () async {
+            if (controller.index < controller.quizes!.length - 1) {
+              Get.back();
+              controller.next();
+            } else {
+              SharedPreferences pref = await SharedPreferences.getInstance();
+              pref.clear();
+              await controller.calculate(quizId: controller.quizId!).then(
+                  (value) => value.value != null
+                      ? Get.offAll(() => QuizResult(result: value.value!))
+                      : snackbar(context, false, value.message!));
+            }
           },
         )
       ],

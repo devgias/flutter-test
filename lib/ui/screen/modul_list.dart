@@ -14,9 +14,12 @@ class ModulListScreen extends GetView<HomeController> {
         child: Scaffold(
           backgroundColor: secondaryOneColor,
           appBar: AppBar(
+            elevation: 0,
+            backgroundColor: secondaryOneColor,
+            iconTheme: const IconThemeData(color: Colors.white),
             title: Text(
               title,
-              style: appTitle,
+              style: appTitle.copyWith(color: Colors.white),
             ),
           ),
           body: ListView(
@@ -48,7 +51,7 @@ class ModulListScreen extends GetView<HomeController> {
                 height: MediaQuery.of(context).size.height - 200,
                 child: GetBuilder<HomeController>(
                   id: 'modulList',
-                  builder: (_) => controller.filteredModuls!.isEmpty
+                  builder: (_) => (controller.filteredModuls ?? []).isEmpty
                       ? Center(
                           child: Text(
                             controller.searchController.text.isEmpty
@@ -59,7 +62,7 @@ class ModulListScreen extends GetView<HomeController> {
                           ),
                         )
                       : ListView.builder(
-                          itemCount: controller.filteredModuls!.length,
+                          itemCount: controller.filteredModuls?.length,
                           itemBuilder: (context, index) => Card(
                             margin: const EdgeInsets.symmetric(
                                 vertical: 5, horizontal: 10),
@@ -67,13 +70,7 @@ class ModulListScreen extends GetView<HomeController> {
                             child: ListTileMenu(
                               ontap: () => Get.to(
                                   () => PdfScreen(
-                                        title: controller
-                                            .filteredModuls![index].name!,
-                                        link: baseUrlDocs +
-                                            controller
-                                                .filteredModuls![index].path!,
-                                        isQuizable: controller
-                                            .filteredModuls![index].isQuizable!,
+                                        modul: controller.moduls![index],
                                       ),
                                   transition: Transition.cupertino),
                               titleText: controller.filteredModuls![index].name,

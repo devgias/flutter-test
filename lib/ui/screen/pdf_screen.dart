@@ -1,15 +1,8 @@
 part of 'screens.dart';
 
 class PdfScreen extends StatefulWidget {
-  const PdfScreen(
-      {Key? key,
-      required this.title,
-      required this.link,
-      required this.isQuizable})
-      : super(key: key);
-  final String link;
-  final String title;
-  final bool isQuizable;
+  final ModulModel modul;
+  const PdfScreen({Key? key, required this.modul}) : super(key: key);
 
   @override
   _PdfScreenState createState() => _PdfScreenState();
@@ -53,7 +46,7 @@ class _PdfScreenState extends State<PdfScreen> {
   @override
   void initState() {
     requestPermission();
-    getFileFromUrl(widget.link).then(
+    getFileFromUrl(baseUrlDocs + widget.modul.path!).then(
       (File? value) {
         if (mounted) {
           setState(
@@ -87,8 +80,7 @@ class _PdfScreenState extends State<PdfScreen> {
       return Scaffold(
         body: PDFView(
           filePath: urlPDFPath,
-          autoSpacing: true,
-          enableSwipe: true,
+          fitEachPage: false,
           pageSnap: true,
           swipeHorizontal: true,
           nightMode: false,
@@ -120,18 +112,28 @@ class _PdfScreenState extends State<PdfScreen> {
           onPageError: (page, e) {},
         ),
         floatingActionButton: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            widget.isQuizable
+            widget.modul.isQuizable ?? false
                 ? Padding(
                     padding: const EdgeInsets.only(left: 30),
                     child: ElevatedButton(
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all<Color>(
+                            const Color.fromARGB(255, 56, 111, 156)),
+                      ),
                       onPressed: () async {
                         final pref = await SharedPreferences.getInstance();
                         pref.setBool('modequiz', true);
-                        Get.offAll(() => QuizScreen(
-                              quiz: mockQuiz,
-                              index: 0,
-                            ));
+                        pref.setInt('quizid', widget.modul.quizId ?? 0);
+                        final homecontroller = Get.find<HomeController>();
+                        await homecontroller
+                            .isquizable(quizId: widget.modul.quizId!)
+                            .then((value) => value.value ?? false
+                                ? Get.offAll(() => QuizScreen(),
+                                    arguments: widget.modul.quizId)
+                                : snackbar(context, value.value ?? false,
+                                    value.message ?? 'Error'));
                       },
                       child: Text(
                         'Quiz',
@@ -140,40 +142,49 @@ class _PdfScreenState extends State<PdfScreen> {
                     ),
                   )
                 : const SizedBox(),
-            const Spacer(),
-            IconButton(
-              icon: const Icon(Icons.arrow_left_rounded),
-              iconSize: 50,
-              color: Colors.black,
-              onPressed: () {
-                if (mounted) {
-                  setState(() {
-                    if (_currentPage > 0) {
-                      _currentPage--;
-                      _pdfViewController!.setPage(_currentPage);
-                    }
-                  });
-                }
-              },
-            ),
-            Text(
-              "${_currentPage + 1}/$_totalPages",
-              style: const TextStyle(color: Colors.black, fontSize: 20),
-            ),
-            IconButton(
-              icon: const Icon(Icons.arrow_right_rounded),
-              iconSize: 50,
-              color: Colors.black,
-              onPressed: () {
-                if (mounted) {
-                  setState(() {
-                    if (_currentPage < _totalPages - 1) {
-                      _currentPage++;
-                      _pdfViewController!.setPage(_currentPage);
-                    }
-                  });
-                }
-              },
+            Container(
+              decoration: const BoxDecoration(
+                color: Color.fromARGB(255, 56, 111, 156),
+                borderRadius: BorderRadius.all(Radius.circular(50)),
+              ),
+              child: Row(
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.arrow_back_ios_rounded),
+                    iconSize: 20,
+                    color: Colors.white,
+                    onPressed: () {
+                      if (mounted) {
+                        setState(() {
+                          if (_currentPage > 0) {
+                            _currentPage--;
+                            _pdfViewController!.setPage(_currentPage);
+                          }
+                        });
+                      }
+                    },
+                  ),
+                  Text(
+                    "${_currentPage + 1}/$_totalPages",
+                    style: const TextStyle(color: Colors.white, fontSize: 16),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.arrow_forward_ios_rounded),
+                    iconSize: 20,
+                    color: Colors.white,
+                    onPressed: () {
+                      if (mounted) {
+                        setState(() {
+                          if (_currentPage < _totalPages - 1) {
+                            _currentPage++;
+                            _pdfViewController!.setPage(_currentPage);
+                          }
+                        });
+                      }
+                    },
+                  ),
+                ],
+              ),
             ),
           ],
         ),
@@ -181,11 +192,7 @@ class _PdfScreenState extends State<PdfScreen> {
     } else {
       if (exists) {
         //Replace with your loading UI
-        return Scaffold(
-            appBar: AppBar(
-              title: Text(widget.title),
-            ),
-            body: const Center(child: CircularProgressIndicator()));
+        return const Scaffold(body: Center(child: CircularProgressIndicator()));
       } else {
         //Replace Error UI
         return Scaffold(
