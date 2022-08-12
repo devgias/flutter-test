@@ -10,8 +10,8 @@ class UserFormController extends GetxController with StateMixin<UserModel> {
   TextEditingController companyController = TextEditingController();
   RxBool show = RxBool(false);
 
-  getDetailUser({required String url}) async {
-    final response = await UserService.getUser(url: url);
+  getDetailUser({required String userLogin}) async {
+    final response = await UserService.getUser(userLogin: userLogin);
     if (response.value == null) {
       change(null, status: RxStatus.error(response.message));
       return;

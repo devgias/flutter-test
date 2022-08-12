@@ -30,9 +30,11 @@ class UserService {
   }
 
   static Future<ApiReturnValue<UserModel>> getUser(
-      {required String url}) async {
+      {required String userLogin}) async {
     try {
-      final json = await ApiService().get(url, headers: {
+      print(userLogin);
+      final json = await ApiService()
+          .get("${ApiUrl.baseUrl}/users/$userLogin", headers: {
         'Content-Type': 'application/json',
       }).timeout(const Duration(seconds: 10));
       if (json.value == null) {

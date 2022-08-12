@@ -11,7 +11,7 @@ class UserFormEditView extends GetView<UserFormController> {
 
   @override
   Widget build(BuildContext context) {
-    controller.getDetailUser(url: Get.parameters['url'] ?? '');
+    controller.getDetailUser(userLogin: Get.parameters['login'] ?? '');
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -21,46 +21,51 @@ class UserFormEditView extends GetView<UserFormController> {
         ),
       ),
       body: SafeArea(
-          child: SingleChildScrollView(
-        child: controller.obx(
-          (state) => const UserForm(isAdd: false),
-          onError: (error) => Center(
-            child: Column(
-              children: [
-                Container(
-                  height: 300,
-                  width: 300,
-                  decoration: const BoxDecoration(
-                    image: DecorationImage(
-                      image: AssetImage('assets/error.png'),
-                      fit: BoxFit.cover,
+        child: SingleChildScrollView(
+          child: controller.obx((state) => const UserForm(isAdd: false),
+              onError: (error) => Center(
+                    child: Column(
+                      children: [
+                        Container(
+                          height: 300,
+                          width: 300,
+                          decoration: const BoxDecoration(
+                            image: DecorationImage(
+                              image: AssetImage('assets/error.png'),
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              error.toString(),
+                              style: AppStyle.titleStyle,
+                            ),
+                            InkWell(
+                              onTap: () => controller.getDetailUser(
+                                  userLogin: Get.parameters['login'] ?? ''),
+                              child: Text(
+                                ' Retry',
+                                style: AppStyle.titleStyle
+                                    .copyWith(color: Colors.blue[400]),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
                   ),
+              onLoading: Container(
+                margin: const EdgeInsets.only(top: 100),
+                child: const Center(
+                  child: CircularProgressIndicator(),
                 ),
-                const SizedBox(height: 16),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      error.toString(),
-                      style: AppStyle.titleStyle,
-                    ),
-                    InkWell(
-                      onTap: () => controller.getDetailUser(
-                          url: Get.parameters['url'] ?? ''),
-                      child: Text(
-                        ' Retry',
-                        style: AppStyle.titleStyle
-                            .copyWith(color: Colors.blue[400]),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
+              )),
         ),
-      )),
+      ),
     );
   }
 }

@@ -17,7 +17,7 @@ class UserCardTile extends StatelessWidget {
           horizontal: 16,
         ),
         child: ListTile(
-          onTap: () => Get.toNamed('/user/edit?url=${user?.url}'),
+          onTap: () => Get.toNamed('/user/edit?login=${user?.login}'),
           title: Text(
             "User : ${user?.login ?? '-'}",
             style: AppStyle.titleStyle,
