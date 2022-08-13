@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # giastest
 
 A new Flutter project.
@@ -14,3 +15,6 @@ A few resources to get you started if this is your first Flutter project:
 For help getting started with Flutter development, view the
 [online documentation](https://docs.flutter.dev/), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
+=======
+This is Repo for flutter test
+>>>>>>> 52c7499eece7c3e19fea7152b9de1d369f3dbc6b
