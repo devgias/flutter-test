@@ -8,31 +8,49 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-  Future<List> setUp() async {
+  Future setUp() async {
     final pref = await SharedPreferences.getInstance();
-    return [
-      pref.getBool('modequiz') ?? false,
-      pref.getInt('quizid') ?? 0,
-    ];
+    bool quizMode = pref.getBool('modequiz') ?? false;
+    String? token = pref.getString('token');
+    log(token ?? 'token null');
+    if (quizMode && token != null) {
+      log('masuk quiz mode dan token tidak null');
+      await checkToken().then((value) async => (value.value != null)
+          ? Get.offAll(
+              () => QuizScreen(),
+              arguments: pref.getInt('quizid'),
+            )
+          : await clearAllCredentials(pref).then((value) => Get.offAll(
+                () => LoginScreen(),
+              )));
+
+      return;
+    }
+
+    if (token != null) {
+      log('masuk token tidak null');
+      await checkToken().then((value) async => value.value != null
+          ? Get.offAll(() => const HomeScreen())
+          : await clearAllCredentials(pref)
+              .then((_) => Get.offAll(() => LoginScreen())));
+      return;
+    }
+    log('masuk login');
+
+    await clearAllCredentials(pref)
+        .then((_) => Get.offAll(() => LoginScreen()));
+    return;
   }
+
+  Future clearAllCredentials(SharedPreferences pref) async =>
+      await pref.clear();
+
+  Future<ApiReturnValue<UserModel?>> checkToken() async =>
+      await AuthService.getDataUser();
 
   @override
   void initState() {
-    setUp().then(
-      (value) => Timer(
-        const Duration(seconds: 3),
-        () => value[0]
-            ? Get.offAll(
-                () => QuizScreen(),
-                transition: Transition.cupertino,
-                arguments: value[1],
-              )
-            : Get.offAll(
-                () => const HomeScreen(),
-                transition: Transition.cupertino,
-              ),
-      ),
-    );
+    Timer(const Duration(seconds: 3), () => setUp());
     super.initState();
   }
 

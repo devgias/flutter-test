@@ -10,29 +10,31 @@ class MyDrawer extends GetView<HomeController> {
           child: Column(
             children: [
               Container(
-                margin:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 30),
-                height: 150,
-                width: double.infinity / 4,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Image.asset(
-                      'assets/cs.png',
-                      scale: 1.5,
-                    ),
-                    const Spacer(),
-                    Text(
-                      'Usep Hermanto',
-                      style: title.copyWith(color: Colors.white),
-                    ),
-                    Text(
-                      'BUSDEV',
-                      style: subtTitle.copyWith(color: Colors.white),
-                    )
-                  ],
-                ),
-              ),
+                  margin:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 30),
+                  height: 150,
+                  width: double.infinity / 4,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Image.asset(
+                        'assets/file.png',
+                        scale: 0.5,
+                      ),
+                      const Spacer(),
+                      Text(
+                        controller.user?.fullName ?? '-',
+                        style: title.copyWith(
+                            color: Colors.white, letterSpacing: 1),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      Text(
+                        "${controller.user?.divisi.name ?? '-'} - ${controller.user?.joblevel.name ?? '-'}",
+                        style: subtTitle.copyWith(color: Colors.white),
+                        overflow: TextOverflow.ellipsis,
+                      )
+                    ],
+                  )),
               const Divider(
                 thickness: 1,
                 color: Colors.grey,
@@ -57,7 +59,11 @@ class MyDrawer extends GetView<HomeController> {
                 color: Colors.white,
               ),
               DrawerListTile(
-                ontap: () {},
+                ontap: () async => await controller.logout().then((value) =>
+                    value.value ?? false
+                        ? Get.offAll(() => LoginScreen())
+                        : snackbar(context, value.value ?? false,
+                            value.message ?? 'error')),
                 title: 'Log Out',
                 icon: MdiIcons.logout,
               ),

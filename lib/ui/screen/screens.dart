@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
@@ -5,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:modul_app/constant/constant.dart';
 import 'package:modul_app/controller/controllers.dart';
 import 'package:modul_app/model/models.dart';
+import 'package:modul_app/service/services.dart';
 import 'package:modul_app/ui/widget/widgets.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -22,3 +24,4 @@ part 'quiz_result.dart';
 part 'job_desc_screen.dart';
 part 'splash_screen.dart';
 part 'quiz_history.dart';
+part 'login_screen.dart';

@@ -10,3 +10,4 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 part 'home_controller.dart';
 part 'quiz_controller.dart';
+part 'login_controller.dart';

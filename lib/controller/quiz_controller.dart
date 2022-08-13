@@ -53,7 +53,8 @@ class QuizController extends GetxController {
   void notifExpired() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
     if (index == quizes!.length - 1) {
-      pref.clear();
+      pref.remove('modequiz');
+      pref.remove('quizid');
       await calculate(quizId: quizId!).then((value) => (value.value != null)
           ? Get.offAll(() => QuizResult(result: value.value!))
           : null);
@@ -121,7 +122,8 @@ class QuizController extends GetxController {
   @override
   void onClose() async {
     final pref = await SharedPreferences.getInstance();
-    pref.clear();
+    pref.remove('modequiz');
+    pref.remove('quizid');
     timer?.cancel();
     super.onClose();
   }

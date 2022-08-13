@@ -4,13 +4,14 @@ class QuizService {
   static Future<ApiReturnValue<bool>> isquizable(
       {required int quizId, http.Client? client}) async {
     try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
       client ??= http.Client();
       final response = await client.get(
         Uri.parse(baseApi + 'quiz/isquizable/$quizId'),
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
-          'Authorization': token,
+          'Authorization': 'Bearer ${prefs.getString('token')}',
         },
       );
 
@@ -35,13 +36,14 @@ class QuizService {
       {required int quizId, http.Client? client}) async {
     try {
       client ??= http.Client();
+      SharedPreferences prefs = await SharedPreferences.getInstance();
 
       final response = await client.get(
         Uri.parse(baseApi + 'quiz/question/$quizId'),
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
-          'Authorization': token,
+          'Authorization': 'Bearer ${prefs.getString('token')}',
         },
       );
 
@@ -74,6 +76,7 @@ class QuizService {
       http.Client? client}) async {
     try {
       client ??= http.Client();
+      SharedPreferences prefs = await SharedPreferences.getInstance();
 
       final response = await client.post(
         Uri.parse(baseApi + 'quiz/answer/$questionId'),
@@ -85,7 +88,7 @@ class QuizService {
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
-          'Authorization': token,
+          'Authorization': 'Bearer ${prefs.getString('token')}',
         },
       );
 
@@ -109,12 +112,13 @@ class QuizService {
       {required int quizId, http.Client? client}) async {
     try {
       client ??= http.Client();
+      SharedPreferences prefs = await SharedPreferences.getInstance();
       final response = await client.get(
         Uri.parse(baseApi + 'quiz/calculate/$quizId'),
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
-          'Authorization': token,
+          'Authorization': 'Bearer ${prefs.getString('token')}',
         },
       );
 
@@ -143,12 +147,13 @@ class QuizService {
       {http.Client? client}) async {
     try {
       client ??= http.Client();
+      SharedPreferences prefs = await SharedPreferences.getInstance();
       final response = await http.get(
         Uri.parse(baseApi + 'quiz/history'),
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
-          'Authorization': token,
+          'Authorization': 'Bearer ${prefs.getString('token')}',
         },
       );
 

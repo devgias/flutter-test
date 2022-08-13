@@ -123,17 +123,21 @@ class _PdfScreenState extends State<PdfScreen> {
                             const Color.fromARGB(255, 56, 111, 156)),
                       ),
                       onPressed: () async {
-                        final pref = await SharedPreferences.getInstance();
-                        pref.setBool('modequiz', true);
-                        pref.setInt('quizid', widget.modul.quizId ?? 0);
                         final homecontroller = Get.find<HomeController>();
                         await homecontroller
                             .isquizable(quizId: widget.modul.quizId!)
-                            .then((value) => value.value ?? false
-                                ? Get.offAll(() => QuizScreen(),
-                                    arguments: widget.modul.quizId)
-                                : snackbar(context, value.value ?? false,
-                                    value.message ?? 'Error'));
+                            .then((value) async {
+                          if (value.value ?? false) {
+                            final pref = await SharedPreferences.getInstance();
+                            pref.setBool('modequiz', true);
+                            pref.setInt('quizid', widget.modul.quizId ?? 0);
+                            Get.offAll(() => QuizScreen(),
+                                arguments: widget.modul.quizId);
+                          } else {
+                            snackbar(context, value.value ?? false,
+                                value.message ?? 'Error');
+                          }
+                        });
                       },
                       child: Text(
                         'Quiz',

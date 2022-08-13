@@ -7,7 +7,10 @@ class QuizHistoryScreen extends GetView<HomeController> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: secondaryOneColor,
-      drawer: const MyDrawer(),
+      drawer: GetBuilder<HomeController>(
+        id: 'user',
+        builder: (_) => const MyDrawer(),
+      ),
       appBar: AppBar(
         elevation: 0,
         backgroundColor: secondaryOneColor,
@@ -25,7 +28,9 @@ class QuizHistoryScreen extends GetView<HomeController> {
                       history: controller.quizResults[index],
                     ))
             : Center(
-                child: Text('No Quiz History', style: subtTitle),
+                child: Text('No Quiz History',
+                    style:
+                        title.copyWith(color: Colors.white, letterSpacing: 2)),
               ),
       ),
     );

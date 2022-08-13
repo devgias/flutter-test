@@ -53,14 +53,25 @@ class ModulListScreen extends GetView<HomeController> {
                   id: 'modulList',
                   builder: (_) => (controller.filteredModuls ?? []).isEmpty
                       ? Center(
-                          child: Text(
-                            controller.searchController.text.isEmpty
-                                ? 'Belum ada modul'
-                                : 'Tidak ditemukan modul',
-                            style: subtTitle.copyWith(
-                                color: Colors.white, fontSize: 20),
-                          ),
-                        )
+                          child: Column(
+                          children: [
+                            Container(
+                              height: 300,
+                              width: 300,
+                              decoration: const BoxDecoration(
+                                  image: DecorationImage(
+                                      image: AssetImage('assets/no-data.png'),
+                                      fit: BoxFit.cover)),
+                            ),
+                            Text(
+                              controller.searchController.text.isEmpty
+                                  ? 'Belum ada modul'
+                                  : 'Tidak ditemukan modul',
+                              style: subtTitle.copyWith(
+                                  color: Colors.white, fontSize: 20),
+                            ),
+                          ],
+                        ))
                       : ListView.builder(
                           itemCount: controller.filteredModuls?.length,
                           itemBuilder: (context, index) => Card(

@@ -1,6 +1,7 @@
 part of 'controllers.dart';
 
 class HomeController extends GetxController {
+  UserModel? user;
   ModulModel? modul;
   List<ModulModel>? moduls;
   List<ModulModel>? filteredModuls;
@@ -27,13 +28,8 @@ class HomeController extends GetxController {
     return ApiReturnValue(value: true, message: null);
   }
 
-  Future<ApiReturnValue<bool>> isquizable({required int quizId}) async {
-    final result = await QuizService.isquizable(quizId: quizId);
-    if (result.value!) {
-      return ApiReturnValue(value: result.value, message: result.message);
-    }
-    return ApiReturnValue(value: result.value, message: result.message);
-  }
+  Future<ApiReturnValue<bool>> isquizable({required int quizId}) async =>
+      await QuizService.isquizable(quizId: quizId);
 
   Future<ApiReturnValue<bool>> getresults() async {
     final result = await QuizService.getresults();
@@ -56,9 +52,18 @@ class HomeController extends GetxController {
     update(['modulList']);
   }
 
+  Future<ApiReturnValue<UserModel?>> getDataUser() async =>
+      await AuthService.getDataUser().then((value) => value);
+
+  Future<ApiReturnValue<bool>> logout() async => await AuthService.logout();
+
   @override
   void onInit() async {
     FlutterWindowManager.addFlags(FlutterWindowManager.FLAG_SECURE);
+    await getDataUser().then((value) {
+      value.value != null ? user = value.value : null;
+      update(['user']);
+    });
     super.onInit();
   }
 }

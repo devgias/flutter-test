@@ -100,21 +100,10 @@ class QuizScreen extends StatelessWidget {
                                                   context: context,
                                                   builder: (context) =>
                                                       WillPopScope(
-                                                        child: resultDialog(
-                                                          context,
-                                                          e.content! ==
-                                                              controller
-                                                                  .quizes![
-                                                                      controller
-                                                                          .index]
-                                                                  .options!
-                                                                  .firstWhere(
-                                                                      (element) =>
-                                                                          element
-                                                                              .isTrue!)
-                                                                  .content,
-                                                          e.content!,
-                                                          correctAnswer: controller
+                                                    child: resultDialog(
+                                                      context,
+                                                      e.content! ==
+                                                          controller
                                                               .quizes![
                                                                   controller
                                                                       .index]
@@ -124,10 +113,21 @@ class QuizScreen extends StatelessWidget {
                                                                       element
                                                                           .isTrue!)
                                                               .content,
-                                                        ),
-                                                        onWillPop: () =>
-                                                            Future.value(false),
-                                                      ))
+                                                      e.content!,
+                                                      correctAnswer: controller
+                                                          .quizes![controller
+                                                              .index]
+                                                          .options!
+                                                          .firstWhere(
+                                                              (element) =>
+                                                                  element
+                                                                      .isTrue!)
+                                                          .content,
+                                                    ),
+                                                    onWillPop: () =>
+                                                        Future.value(false),
+                                                  ),
+                                                )
                                               : snackbar(context, value.value!,
                                                   value.message!),
                                         );
@@ -187,7 +187,7 @@ class QuizScreen extends StatelessWidget {
         TextButton(
             onPressed: () async =>
                 await controller.calculate(quizId: controller.quizId!).then(
-                      (value) => value != null
+                      (value) => value.value != null
                           ? Get.offAll(
                               () => QuizResult(
                                 result: value.value!,
@@ -305,7 +305,8 @@ class QuizScreen extends StatelessWidget {
               controller.next();
             } else {
               SharedPreferences pref = await SharedPreferences.getInstance();
-              pref.clear();
+              pref.remove('modequiz');
+              pref.remove('quizid');
               await controller.calculate(quizId: controller.quizId!).then(
                   (value) => value.value != null
                       ? Get.offAll(() => QuizResult(result: value.value!))

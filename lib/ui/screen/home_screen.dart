@@ -6,7 +6,10 @@ class HomeScreen extends GetView<HomeController> {
   @override
   Widget build(BuildContext context) => Scaffold(
         backgroundColor: secondaryOneColor,
-        drawer: const MyDrawer(),
+        drawer: GetBuilder<HomeController>(
+          id: 'user',
+          builder: (_) => const MyDrawer(),
+        ),
         appBar: AppBar(
           elevation: 0,
           backgroundColor: secondaryOneColor,
@@ -15,10 +18,6 @@ class HomeScreen extends GetView<HomeController> {
             'Modul App',
             style: appTitle.copyWith(color: Colors.white),
           ),
-          actions: [
-            IconButton(
-                onPressed: () {}, icon: const Icon(Icons.logout_outlined))
-          ],
         ),
         body: Container(
           height: MediaQuery.of(context).size.height,
