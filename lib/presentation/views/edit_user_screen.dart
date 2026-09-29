@@ -14,10 +14,10 @@ class EditUserScreen extends StatefulWidget {
   const EditUserScreen({super.key, required this.username});
 
   @override
-  State<EditUserScreen> createState() => _EditUserPageState();
+  State<EditUserScreen> createState() => _EditUserScreenState();
 }
 
-class _EditUserPageState extends State<EditUserScreen> {
+class _EditUserScreenState extends State<EditUserScreen> {
   final _formKey = GlobalKey<FormState>();
   late final TextEditingController _nameController;
   late final TextEditingController _emailController;
