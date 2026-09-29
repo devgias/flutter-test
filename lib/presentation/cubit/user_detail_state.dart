@@ -1,0 +1,34 @@
+part of 'user_detail_cubit.dart';
+
+sealed class UserDetailState extends Equatable {
+  const UserDetailState();
+
+  @override
+  List<Object?> get props => [];
+}
+
+class UserDetailInitial extends UserDetailState {
+  const UserDetailInitial();
+}
+
+class UserDetailLoading extends UserDetailState {
+  const UserDetailLoading();
+}
+
+class UserDetailLoaded extends UserDetailState {
+  final UserDetailModel user;
+
+  const UserDetailLoaded(this.user);
+
+  @override
+  List<Object?> get props => [user];
+}
+
+class UserDetailError extends UserDetailState {
+  final String message;
+
+  const UserDetailError(this.message);
+
+  @override
+  List<Object?> get props => [message];
+}
