@@ -8,16 +8,16 @@ import '../cubit/user_detail_cubit.dart';
 import '../widgets/custom_text_field.dart';
 import '../widgets/primary_button.dart';
 
-class EditUserPage extends StatefulWidget {
+class EditUserScreen extends StatefulWidget {
   final String username;
 
-  const EditUserPage({super.key, required this.username});
+  const EditUserScreen({super.key, required this.username});
 
   @override
-  State<EditUserPage> createState() => _EditUserPageState();
+  State<EditUserScreen> createState() => _EditUserPageState();
 }
 
-class _EditUserPageState extends State<EditUserPage> {
+class _EditUserPageState extends State<EditUserScreen> {
   final _formKey = GlobalKey<FormState>();
   late final TextEditingController _nameController;
   late final TextEditingController _emailController;

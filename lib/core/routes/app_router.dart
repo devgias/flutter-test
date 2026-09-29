@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gias_flutter_test/core/constants/route_path_constants.dart';
 import 'package:gias_flutter_test/presentation/views/add_user_screen.dart';
-import 'package:gias_flutter_test/presentation/views/edit_user_page.dart';
+import 'package:gias_flutter_test/presentation/views/edit_user_screen.dart';
 import 'package:gias_flutter_test/presentation/views/user_list_screen.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
@@ -15,7 +15,7 @@ class AppRouter {
         return MaterialPageRoute(builder: (_) => const AddUserScreen());
       case RoutePathConstants.editUser:
         final username = settings.arguments as String;
-        return MaterialPageRoute(builder: (_) => EditUserPage(username: username));
+        return MaterialPageRoute(builder: (_) => EditUserScreen(username: username));
       default:
         return MaterialPageRoute(
           builder: (_) => Scaffold(
